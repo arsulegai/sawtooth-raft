@@ -90,15 +90,19 @@ impl BlockQueue {
 
     // Returns the BlockId of the next block that can be committed (if there is one)
     pub fn get_next_committable(&mut self, chain_head: &Block) -> Option<BlockId> {
+        for idx in 0..self.commit_queue.len() {
         if let Some(&(ref block_id, _)) = self.commit_queue.front() {
             if let Some(status) = self.validator_backlog.get(block_id) {
                 if let Some(block) = status.block.clone() {
-                    if status.block_valid && block.previous_id == chain_head.block_id {
+                    if status.block_valid {
                         // Block is ready
                         return Some(block_id.clone());
                     }
                 }
             }
+        }
+        let (block_id_removed, entry_removed) = self.commit_queue.pop_front().expect("Not possible");
+        self.commit_queue.push_back((block_id_removed, entry_removed));
         }
         // No block or next block not ready
         None
