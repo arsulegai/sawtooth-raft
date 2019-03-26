@@ -100,7 +100,7 @@ fn main() {
 fn get_console_config(log_level: log::LevelFilter) -> Config {
     let stdout = ConsoleAppender::builder()
         .encoder(Box::new(PatternEncoder::new(
-            "{h({l:5.5})} | {({M}:{L}):20.20} | {m}{n}",
+            "{d:22.22} {h({l:5.5})} | {({M}:{L}):20.20} | {m}{n}",
         )))
         .build();
 
